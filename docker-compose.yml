@@ -1,0 +1,54 @@
+version:  '3.7'
+ 
+services:
+  database:
+    # image: mariadb:10.3
+    image: mysql:8
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD
+      - MYSQL_DATABASE
+    volumes:
+      - ./services/sql/my.cnf:/etc/mysql/my.cnf
+    container_name: t_db
+    ports:
+      - 3306:3306
+    networks: 
+      - default
+
+  php:
+    build:
+      context: services/php
+      # dockerfile: Dockerfile
+    # restart: on-failure
+    restart: always
+    container_name: t_php
+    volumes:
+      - './src/:/var/www/html'
+
+      # Useless to correct the permission denied on the var folder
+      #- /usr/src/app/var
+    # env_file:
+      # - .env
+    # user: 1000:1000
+    depends_on: 
+      - database
+    networks: 
+      - default
+
+  nginx:
+    image: nginx:latest
+    restart: always
+    container_name: t_ngn
+    volumes:
+      - './src/:/var/www/html'
+      - './services/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro'
+    ports:
+      - 80:80
+    depends_on:
+      - php
+    networks: 
+      - default
+
+networks: 
+  default:
