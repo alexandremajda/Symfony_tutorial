@@ -6,8 +6,8 @@ services:
     image: mysql:8
     restart: always
     environment:
-      - MYSQL_ROOT_PASSWORD
-      - MYSQL_DATABASE
+      - MYSQL_ROOT_PASSWORD="root"
+      - MYSQL_DATABASE="vidmizer"
     volumes:
       - ./services/sql/my.cnf:/etc/mysql/my.cnf
     container_name: t_db
