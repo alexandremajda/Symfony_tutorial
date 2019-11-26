@@ -1,5 +1,11 @@
-# Vidmizer
-The Vidmizer admission test
+# Dockerized Symfony Template
+This repository provides you basic skeleton to work on a dockerized symfony application
+
+## Good to know
+- Check is the `src/` folder is created in your root project, if not, you have to create it and make the composer application inside of it
+
+- To create your symfony app in the right folder, just precise with your `composer` command that you want to create the project into the current folder (`.`)
+
 
 ## Start up dockers
 To start the application, ensure you've `make` installed, and type the following command 
