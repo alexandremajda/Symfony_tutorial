@@ -6,8 +6,8 @@ services:
     image: mysql:8
     restart: always
     environment:
-      - MYSQL_ROOT_PASSWORD
-      - MYSQL_DATABASE
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: example
     volumes:
       - ./services/sql/my.cnf:/etc/mysql/my.cnf
     container_name: t_db
@@ -19,18 +19,10 @@ services:
   php:
     build:
       context: services/php
-      # dockerfile: Dockerfile
-    # restart: on-failure
     restart: always
     container_name: t_php
     volumes:
       - './src/:/var/www/html'
-
-      # Useless to correct the permission denied on the var folder
-      #- /usr/src/app/var
-    # env_file:
-      # - .env
-    # user: 1000:1000
     depends_on: 
       - database
     networks: 

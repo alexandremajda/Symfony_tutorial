@@ -10,7 +10,8 @@ RUN apt-get update && \
     zlib1g-dev \
     sudo \
     iputils-ping \
-    net-tools
+    net-tools \
+    zip
 
 RUN docker-php-ext-install zip
 RUN docker-php-ext-enable apcu
