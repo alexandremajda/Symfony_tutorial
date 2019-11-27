@@ -21,18 +21,10 @@ services:
   php:
     build:
       context: services/php
-      # dockerfile: Dockerfile
-    # restart: on-failure
     restart: always
     container_name: t_php
     volumes:
       - './src/:/var/www/html'
-
-      # Useless to correct the permission denied on the var folder
-      #- /usr/src/app/var
-    # env_file:
-      # - .env
-    # user: 1000:1000
     depends_on: 
       - database
     networks: 
