@@ -12,24 +12,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
  */
 class BlogController extends AbstractController {
 
-    private const POSTS = [
-        [
-            'id'    => 1,
-            'slug'  => 'hello-world',
-            'title' => 'Hello world!',
-        ],
-        [
-            'id'    => 2,
-            'slug'  => 'another-post',
-            'title' => 'Another post',
-        ],
-        [
-            'id'    => 3,
-            'slug'  => 'last-example',
-            'title' => 'This is the last example',
-        ],
-    ];
-    
+
     /**
      * @Route("/{page}", name="blog_list", defaults={"page": 10}, requirements={"page"="\d+"})
      *
@@ -43,11 +26,25 @@ class BlogController extends AbstractController {
      * @return Response
      */
     public function list($page = 1, Request $request) {
+        
         $limit = $request->get("limit", 10);
+
+        /**
+         * Retrieve the right repository to use 
+         */
+        $repository = $this->getDoctrine()->getRepository(BlogPost::class);
+        
+        /**
+         * the `findAll` function of the repository return a list of all records in the associated table from the database
+         * It's the new dataset
+         */
+        $items = $repository->findAll();
+
+
         return $this->json([
             'page' => $page,
             'limit' => $limit,
-            'data' =>  self::POSTS,
+            'data' => $items,
         ]);
     }
 
@@ -57,8 +54,11 @@ class BlogController extends AbstractController {
      * @return void
      */
     public function list_url_by_id() {
-        return $this->json([
+        
+        $repository = $this->getDoctrine()->getRepository(BlogPost::class);
+        $items = $repository->findAll();
 
+        return $this->json([
             /**
              * This array_map takes a function that handle every record in the self::POSTS var
              * and generate urls using id for each of them
@@ -66,7 +66,7 @@ class BlogController extends AbstractController {
              */
             'data' => array_map(function ($items) {
                 return $this->generateUrl("blog_by_id", ['id'=>$items['id']]);
-            }, self::POSTS)
+            }, $items)
         ]);
     }
 
@@ -76,6 +76,10 @@ class BlogController extends AbstractController {
      * @return void
      */
     public function list_url_by_slug() {
+
+        $repository = $this->getDoctrine()->getRepository(BlogPost::class);
+        $items = $repository->findAll();
+
         return $this->json([
 
             /**
@@ -85,7 +89,7 @@ class BlogController extends AbstractController {
              */
             'data' => array_map(function ($items) {
                 return $this->generateUrl("blog_by_slug", ['slug'=>$items['slug']]);
-            }, self::POSTS)
+            }, $items)
         ]);
     }
 
@@ -96,10 +100,15 @@ class BlogController extends AbstractController {
      * @return void
      */
     public function post($id) {
-        $index = array_search($id, array_column(self::POSTS, 'id'));
-        return $this->json(
-            self::POSTS[$index]
-        );
+
+        $repository = $this->getDoctrine()->getRepository(BlogPost::class);
+
+        /**
+         * Fetch an entity by Id to return the right one, using find
+         */
+        $item = $repository->find($id);
+
+        return $this->json($item);
     }
     
     /**
@@ -109,9 +118,18 @@ class BlogController extends AbstractController {
      * @return void
      */
     public function post_by_slug($slug) {
-        $index = array_search($slug, array_column(self::POSTS, 'slug'));
+    
+        $repository = $this->getDoctrine()->getRepository(BlogPost::class);
+
+        /**
+         * Fetch an entity by any other field than id,
+         * using findBy to fetch all elements matching
+         * using findOneBy to fetch only the first one
+         */
+        $item = $repository->findOneBy(['slug' => $slug]);
+
         return $this->json(
-            self::POSTS[$index]
+            $item
         );
 
     }
