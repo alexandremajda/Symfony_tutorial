@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\BlogPost;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -36,6 +37,7 @@ class BlogController extends AbstractController {
      *  => URI
      *  name => Name of the route
      *  defaults => defaults value for params (Json format type)
+     *  requirements => the param must match the requirements, here, param page must be an int
      *  
      * The JsonResponse returns ALWAYS a Response object (It's a symfony Basic's)
      * @return Response
@@ -111,6 +113,49 @@ class BlogController extends AbstractController {
         return $this->json(
             self::POSTS[$index]
         );
+
+    }
+
+    /**
+     * @Route("/add", name="blog_add", methods={"POST"})
+     * 
+     *  methods => precise the method allowed for this route, here, only post method can reach the add route
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function add(Request $request) {
+
+        /**
+         * @var Serializer $serializer
+         * 
+         * Can be done by running the CLI command `composer require serializer`
+         */
+        $serializer = $this->get('serializer');
+
+        /**
+         *  request->getContent() => the request body (which contain the json to deserialize)
+         *  BlogPost::class => The Type towards which we deserialize data received in the request's body
+         *  json => format of data received
+         */
+        $blogPost = $serializer->deserialize($request->getContent(), BlogPost::class, 'json');
+
+        $em = $this->getDoctrine()->getManager();
+
+        /**
+         * Use the EntityManager to persist the received json to the choosen class
+         */
+        $em->persist($blogPost);
+
+        /**
+         * Save data changes
+         */
+        $em->flush();
+        
+        /**
+         * Return an instance of the $blogPost serialized data 
+         */
+        return $this->json($blogPost);
 
     }
 }
