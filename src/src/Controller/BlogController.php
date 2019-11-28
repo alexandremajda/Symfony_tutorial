@@ -6,6 +6,7 @@ use App\Entity\BlogPost;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 /**
  * @Route("/blog")
@@ -113,25 +114,34 @@ class BlogController extends AbstractController {
     
     /**
      * @Route("/post/{slug}", name="blog_by_slug")
-     *
-     * @param String $slug
+     * @ParamConverter("post", class="App:BlogPost", options={"mapping" : {"slug": "author"}})
+     * 
+     * The paramConverter (must be imported) line above specify that 
+     * the post argument is from type BlogPost and map by the author name
+     * 
+     * @param BlogPost $post
      * @return void
      */
-    public function post_by_slug($slug) {
+    public function post_by_slug($post) {
     
-        $repository = $this->getDoctrine()->getRepository(BlogPost::class);
+        // $repository = $this->getDoctrine()->getRepository(BlogPost::class);
 
         /**
          * Fetch an entity by any other field than id,
          * using findBy to fetch all elements matching
          * using findOneBy to fetch only the first one
          */
-        $item = $repository->findOneBy(['slug' => $slug]);
+        // $item = $repository->findOneBy(['slug' => $slug]);
 
-        return $this->json(
-            $item
-        );
+        // return $this->json(
+        //     $item
+        // );
 
+        /**
+         * Equivalent of the findOneBy(['slug' => 'slug']);
+         * Where slug is map in the ParamConverter options (here, slug is author)
+         */ 
+        return $this->json($post);
     }
 
     /**
@@ -174,7 +184,6 @@ class BlogController extends AbstractController {
          * Return an instance of the $blogPost serialized data 
          */
         return $this->json($blogPost);
-
     }
 }
 
