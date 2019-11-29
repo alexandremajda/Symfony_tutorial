@@ -3,6 +3,7 @@
 namespace App\DataFixtures;
 
 use App\Entity\User;
+use App\Entity\Comment;
 use App\Entity\BlogPost;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -10,12 +11,20 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class AppFixtures extends Fixture
 {
+    /**
+     *  Those private variable and the construct are needed to use encryption password
+     */
     private $passwordEncoder;
+    private $faker;
 
     public function __construct(UserPasswordEncoderInterface $passwordEncoder)
     {
-        $this->passwordEncoder = $passwordEncoder;    
+        $this->passwordEncoder = $passwordEncoder;
+
+        // This place the instance of the FakerFactory, there's no import for this
+        $this->faker = \Faker\Factory::create();
     }
+
     /**
      * This method generates a dataset and flush it to the database
      * To run the preset, use :
@@ -29,51 +38,49 @@ class AppFixtures extends Fixture
     {
         $this->loadUser($manager);
         $this->loadBlogPost($manager);
+        $this->loadComment($manager);
     }
 
     public function loadBlogPost(ObjectManager $manager) {
 
         $user = $this->getReference('blop_admin');
-        $blogPost = new BlogPost();
 
-        $blogPost->setAuthor($user);
-        $blogPost->setContent("This is a randomised content");
-        $blogPost->setPublished(new \DateTime('2019-11-28 15:00:00'));
-        $blogPost->setSlug('a-random-slug');
-        $blogPost->setTitle("Toutouyoutou");
+        // Generate 100 fakes blogPosts
+        for ($i = 0; $i < 100; $i++) {
+            $blogPost = new BlogPost();
 
-        $manager->persist($blogPost);
-        $blogPost = new BlogPost();
+            $blogPost->setAuthor($user);
+            $blogPost->setTitle($this->faker->realText(30));
+            $blogPost->setContent($this->faker->realText());
+            $blogPost->setPublished($this->faker->dateTime);
+            $blogPost->setSlug($this->faker->slug);
 
-        $blogPost->setAuthor($user);
-        $blogPost->setContent("This is another randomised content");
-        $blogPost->setPublished(new \DateTime('2019-11-28 16:00:00'));
-        $blogPost->setSlug('another-random-slug');
-        $blogPost->setTitle("ananas");
+            $this->setReference("blog_post_$i", $blogPost); 
 
-        $manager->persist($blogPost);
-        $blogPost = new BlogPost() ;
-
-        $blogPost->setAuthor($user);
-        $blogPost->setContent("This is agagin a randomised content");
-        $blogPost->setPublished(new \DateTime('2019-11-28 12:00:00'));
-        $blogPost->setSlug('again-random-slug');
-        $blogPost->setTitle("plup");
-
-        $manager->persist($blogPost);
-        $blogPost = new BlogPost();
-
-        $blogPost->setAuthor($user);
-        $blogPost->setContent("This is another randomised content. again.");
-        $blogPost->setPublished(new \DateTime('2019-11-28 13:00:00'));
-        $blogPost->setSlug('another-random-slug-again');
-        $blogPost->setTitle("bibidibi");
-
-        $manager->persist($blogPost);
+            $manager->persist($blogPost);
+        }
+            
         $manager->flush();
     }
-    public function loadComment() {
-        
+    public function loadComment(ObjectManager $manager) {
+
+        // For each BlogPost
+        for ($i = 0; $i < 100; $i++) {
+
+            // Generate a random number of comment (between 1 and 10)
+            for ($j = 0; $j < rand(1, 10); $j++) {
+                $comment = new Comment();
+                
+                $comment->setPublished($this->faker->dateTime);
+                $comment->setContent($this->faker->realText());
+                $comment->setAuthor($this->getReference('blop_admin'));
+                $comment->setBlogPost($this->getReference("blog_post_$i"));
+
+                $manager->persist($comment);
+            }
+        }
+
+        $manager->flush();
     }
     public function loadUser(ObjectManager $manager) {
         $user = new User();
