@@ -8,6 +8,8 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 /**
  * Make some operations enable with item/collectionOperations (check api debug:router with the php console to see routes)
@@ -38,22 +40,45 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"read"})
+     * @Assert\NotBlank()
+     * @Assert\Length(min=4, max=255)
      */
     private $username;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank()
+     * 
+     * The Regex check is to specify the input size at least, and set up the check about 1 digit, 1 uppercase/lowercase char, symbols etc
+     * @Assert\Regex(
+     *      pattern="/(?=.+[A-Z])(?=.+[a-z])(?=.*\d).{7,}/",
+     *      message="Password must be 8 chars long and contains 1 digit, 1 uppercase, 1 lowercase "
+     * )
      */
     private $password;
 
     /**
+     * @Assert\NotBlank()
+     * 
+     * Expressions allows you to use some code check as below, which compare the current password with its checker
+     * @Assert\Expression(
+     *      "this.getPassword() === this.getRetypedPassword()",
+     *      message="Passwords does not match"
+     * )
+     */
+    private $retypedPassword;
+
+    /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"read"})
+     * @Assert\NotBlank()
      */
     private $name;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank()
+     * @Assert\Email()
      */
     private $email;
 
@@ -192,5 +217,17 @@ class User implements UserInterface
     public function eraseCredentials()
     {
 
+    }
+
+    public function getRetypedPassword(): ?string
+    {
+        return $this->retypedPassword;
+    }
+
+    public function setRetypedPassword(string $retypedPassword): self
+    {
+        $this->retypedPassword = $retypedPassword;
+
+        return $this;
     }
 }
