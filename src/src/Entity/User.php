@@ -17,8 +17,11 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * Here, get on item route and post on collection route are allow
  * 
  * Make some fields disallowed in 
+ * Adding access control has the same effect as access_control in the security.yaml to get this entity
  * @ApiResource(
- *      itemOperations={"get"},
+ *      itemOperations={"get"={
+ *          "access_control"="is_granted('IS_AUTHENTICATED_FULLY')"
+ *      }},
  *      collectionOperations={"post"},
  *      normalizationContext={
  *          "groups"={"read"}
