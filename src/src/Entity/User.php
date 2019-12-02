@@ -18,14 +18,32 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * 
  * Make some fields disallowed in 
  * Adding access control has the same effect as access_control in the security.yaml to get this entity
+ * 
+ * The normalization context name inside an operation brackets is named with snake_case 
+ * instead of camelCase (which is used when the normalization annotation is outside of operations brackets)
+ * 
  * @ApiResource(
- *      itemOperations={"get"={
- *          "access_control"="is_granted('IS_AUTHENTICATED_FULLY')"
- *      }},
- *      collectionOperations={"post"},
- *      normalizationContext={
- *          "groups"={"read"}
- *      }
+ *      itemOperations={
+ *          "get"={
+ *              "access_control"="is_granted('IS_AUTHENTICATED_FULLY')",
+ *              "normalization_context"={
+ *                  "groups"={"get"}
+ *              }
+ *          },
+ *          "put"={
+ *              "access_control"="is_granted('IS_AUTHENTICATED_FULLY') and object == user",
+ *              "denormalization_context"={
+ *                  "groups"={"put"}
+ *              }
+ *          }
+ *      },
+ *      collectionOperations={
+ *          "post"={
+ *              "denormalization_context"={
+ *                  "groups"={"post"}
+ *              }
+ *          }
+ *      },
  * )
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  * 
@@ -46,13 +64,13 @@ class User implements UserInterface
      * @ORM\Column(type="integer")
      * 
      * This annotation allows field to be fetched by api, this will return each field annotated
-     * @Groups({"read"})
+     * @Groups({"get"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"read"})
+     * @Groups({"get", "post"})
      * @Assert\NotBlank()
      * @Assert\Length(min=4, max=255)
      */
@@ -61,6 +79,7 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank()
+     * @Groups({"put", "post"})
      * 
      * The Regex check is to specify the input size at least, and set up the check about 1 digit, 1 uppercase/lowercase char, symbols etc
      * @Assert\Regex(
@@ -72,6 +91,7 @@ class User implements UserInterface
 
     /**
      * @Assert\NotBlank()
+     * @Groups({"put", "post"})
      * 
      * Expressions allows you to use some code check as below, which compare the current password with its checker
      * @Assert\Expression(
@@ -83,7 +103,7 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"read"})
+     * @Groups({"get", "put", "post"})
      * @Assert\NotBlank()
      */
     private $name;
@@ -91,19 +111,20 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank()
+     * @Groups({"put", "post"})
      * @Assert\Email()
      */
     private $email;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Comment", mappedBy="author")
-     * @Groups({"read"})
+     * @Groups({"get"})
      */
     private $comments;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\BlogPost", mappedBy="author")
-     * @Groups({"read"})
+     * @Groups({"get"})
      */
     private $posts;
 
