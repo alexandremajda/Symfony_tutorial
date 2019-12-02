@@ -2,10 +2,11 @@
 
 namespace App\Entity;
 
+use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\Collection;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\BlogPostRepository")
@@ -13,8 +14,13 @@ use Doctrine\Common\Collections\Collection;
  * One the api bundle is installed (composer require api) add the annotation below 
  * to make your entity fully exploitable by api routes (then reach the /api route in postman to see the new route)
  * @ApiResource(
- *     itemOperations={"get"},
- *     collectionOperations={"get"}
+ *      itemOperations={"get"},
+ *      collectionOperations={
+ *          "get",
+ *          "post"={
+ *              "access_control"="is_granted('IS_AUTHENTICATED_FULLY')"
+ *          }
+ *      }
  * )
  */
 class BlogPost
@@ -28,16 +34,21 @@ class BlogPost
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank()
+     * @Assert\Length(min=10)
      */
     private $title;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Assert\NotBlank()
      */
     private $published;
 
     /**
      * @ORM\Column(type="text")
+     * @Assert\NotBlank()
+     * @Assert\Length(min=20)
      */
     private $content;
 
@@ -49,13 +60,12 @@ class BlogPost
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Assert\NotBlank()
      */
     private $slug;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Comment", mappedBy="blogPost")
-     *
-     * @var [type]
      */
     private $comments;
 
