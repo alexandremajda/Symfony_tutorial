@@ -10,12 +10,13 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
- * Make some operations enable with item/collectionOperations
+ * Make some operations enable with item/collectionOperations (check api debug:router with the php console to see routes)
+ * Here, get on item route and post on collection route are allow
  * 
  * Make some fields disallowed in 
  * @ApiResource(
  *      itemOperations={"get"},
- *      collectionOperations={},
+ *      collectionOperations={"post"},
  *      normalizationContext={
  *          "groups"={"read"}
  *      }
