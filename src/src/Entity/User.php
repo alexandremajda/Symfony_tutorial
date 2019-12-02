@@ -7,8 +7,9 @@ use Doctrine\Common\Collections\Collection;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
-use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 
 /**
@@ -24,6 +25,15 @@ use Symfony\Component\Validator\Constraints as Assert;
  *      }
  * )
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
+ * 
+ * Make entity unique by fields specified.
+ * Here, unicity of username and email, separatly, are checked (can't add a user with same username in DB, or same email)
+ * @UniqueEntity("username")
+ * @UniqueEntity("email")
+ * 
+ * This make association fields must be unique, not one and another one 
+ * (the user can be add if its username AND email are not both present in a same user record in the db)
+ * @UniqueEntity(fields={"username", "email"})
  */
 class User implements UserInterface
 {
