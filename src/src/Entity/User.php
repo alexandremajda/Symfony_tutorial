@@ -22,7 +22,10 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * The normalization context name inside an operation brackets is named with snake_case 
  * instead of camelCase (which is used when the normalization annotation is outside of operations brackets)
  * 
+ * We need to specify the default group (l.28) to avoid some fields returned by the get route
+ * 
  * @ApiResource(
+ *      normalizationContext={"groups"={"get"}}
  *      itemOperations={
  *          "get"={
  *              "access_control"="is_granted('IS_AUTHENTICATED_FULLY')",
@@ -34,6 +37,9 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  *              "access_control"="is_granted('IS_AUTHENTICATED_FULLY') and object == user",
  *              "denormalization_context"={
  *                  "groups"={"put"}
+ *              },
+ *              "normalization_context"={
+ *                  "groups"={"get"}
  *              }
  *          }
  *      },
@@ -41,6 +47,9 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  *          "post"={
  *              "denormalization_context"={
  *                  "groups"={"post"}
+ *              },
+ *              "normalization_context"={
+ *                  "groups"={"get"}
  *              }
  *          }
  *      },

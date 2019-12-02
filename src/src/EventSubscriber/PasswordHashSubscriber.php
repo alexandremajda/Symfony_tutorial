@@ -13,6 +13,7 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 class PasswordHashSubscriber implements EventSubscriberInterface {
 
     private $passwordEncoder;
+    private static $allowedMethods = array(Request::METHOD_POST, Request::METHOD_PUT);
 
     public function __construct(UserPasswordEncoderInterface $passwordEncoder) {
         $this->passwordEncoder = $passwordEncoder;
@@ -33,7 +34,7 @@ class PasswordHashSubscriber implements EventSubscriberInterface {
         $user = $event->getControllerResult();
         $method = $event->getRequest()->getMethod();
 
-        if (!$user instanceof User || Request::METHOD_POST !== $method)
+        if (!$user instanceof User || !in_array($method, $this->allowedMethods))
             return;
 
         $user->setPassword(
