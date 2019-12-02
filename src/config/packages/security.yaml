@@ -6,7 +6,13 @@ security:
         App\Entity\User: bcrypt
 
     providers:
-        in_memory: { memory: null }
+        # in_memory: { memory: null }
+
+        # This allows symfony to knows with which entity it should check token provided credentials 
+        database:
+            entity:
+                class: App\Entity\User
+                property: username
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
