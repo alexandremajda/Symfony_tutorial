@@ -13,8 +13,15 @@ use Doctrine\Common\Collections\ArrayCollection;
  * 
  * One the api bundle is installed (composer require api) add the annotation below 
  * to make your entity fully exploitable by api routes (then reach the /api route in postman to see the new route)
+ * 
+ * user variable refers to the current authenticated user
  * @ApiResource(
- *      itemOperations={"get"},
+ *      itemOperations={
+ *          "get",
+ *          "put"={
+ *              "access_control"="is_granted('IS_AUTHENTICATED_FULLY') and object.getAuthor() == user"
+ *          }
+ *      },
  *      collectionOperations={
  *          "get",
  *          "post"={
