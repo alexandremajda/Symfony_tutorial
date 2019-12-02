@@ -12,7 +12,10 @@ use Doctrine\Common\Collections\Collection;
  * 
  * One the api bundle is installed (composer require api) add the annotation below 
  * to make your entity fully exploitable by api routes (then reach the /api route in postman to see the new route)
- * @ApiResource()
+ * @ApiResource(
+ *     itemOperations={"get"},
+ *     collectionOperations={"get"}
+ * )
  */
 class BlogPost
 {
