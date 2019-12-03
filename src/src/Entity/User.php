@@ -10,6 +10,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Security\Core\Validator\Constraints\UserPassword;
 
 
 /**
@@ -40,6 +41,15 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  *              },
  *              "normalization_context"={
  *                  "groups"={"get"}
+ *              }
+ *          },
+ *          "put-reset-password"={
+ *              "access_control"="is_granted('IS_AUTHENTICATED_FULLY') and object == user",
+ *              "method"="PUT",
+ *              "path"="/users/{id}/reset-password",
+ *              "controller"=ResetPasswordAction::class,
+ *              "denormalization_context"={
+ *                  "groups"={"put-reset-password"}
  *              }
  *          }
  *      },
@@ -103,7 +113,7 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank()
-     * @Groups({"put", "post"})
+     * @Groups({"post"})
      * 
      * The Regex check is to specify the input size at least, and set up the check about 1 digit, 1 uppercase/lowercase char, symbols etc
      * @Assert\Regex(
@@ -115,7 +125,7 @@ class User implements UserInterface
 
     /**
      * @Assert\NotBlank()
-     * @Groups({"put", "post"})
+     * @Groups({"post"})
      * 
      * Expressions allows you to use some code check as below, which compare the current password with its checker
      * @Assert\Expression(
@@ -124,6 +134,37 @@ class User implements UserInterface
      * )
      */
     private $retypedPassword;
+
+    /**
+     * @Assert\NotBlank()
+     * @Groups({"put-reset-password"})
+     * 
+     * The Regex check is to specify the input size at least, and set up the check about 1 digit, 1 uppercase/lowercase char, symbols etc
+     * @Assert\Regex(
+     *      pattern="/(?=.+[A-Z])(?=.+[a-z])(?=.*\d).{7,}/",
+     *      message="Password must be 8 chars long and contains 1 digit, 1 uppercase, 1 lowercase "
+     * )
+     */
+    private $newPassword;
+
+    /**
+     * @Assert\NotBlank()
+     * @Groups({"put-reset-password"})
+     * 
+     * Expressions allows you to use some code check as below, which compare the current password with its checker
+     * @Assert\Expression(
+     *      "this.getNewPassword() === this.getNewRetypedPassword()",
+     *      message="Passwords does not match"
+     * )
+     */
+    private $newRetypedPassword;
+
+    /**
+     * @Groups({"put-reset-password"})
+     * @Assert\NotBlank()
+     * @UserPassword()
+     */
+    private $oldPassword;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -299,5 +340,35 @@ class User implements UserInterface
     public function setRoles(array $roles)
     {
         $this->roles = $roles;
+    }
+
+    public function getOldPassword()
+    {
+        return $this->oldPassword;
+    }
+
+    public function setOldPassword($oldPassword)
+    {
+        $this->oldPassword = $oldPassword;
+    }
+
+    public function getNewRetypedPassword()
+    {
+        return $this->newRetypedPassword;
+    }
+
+    public function setNewRetypedPassword($newRetypedPassword)
+    {
+        $this->newRetypedPassword = $newRetypedPassword;
+    }
+
+    public function getNewPassword()
+    {
+        return $this->newPassword;
+    }
+
+    public function setNewPassword($newPassword)
+    {
+        $this->newPassword = $newPassword;
     }
 }
