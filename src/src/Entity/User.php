@@ -67,6 +67,15 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  */
 class User implements UserInterface
 {
+
+    const ROLE_COMMENTATOR = 'ROLE_COMMENTATOR';
+    const ROLE_WRITER = 'ROLE_WRITER';
+    const ROLE_EDITOR = 'ROLE_EDITOR';
+    const ROLE_ADMIN = 'ROLE_ADMIN';
+    const ROLE_SUPERADMIN = 'ROLE_SUPERADMIN';
+
+    const DEFAULT_ROLES = [self::ROLE_COMMENTATOR];
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -79,9 +88,13 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=255)
-     * 
+     *  
      * The Groups annotation need to be imported
-     * @Groups({"get", "post"})
+     * 
+     * The group "get-comment-with-author" is defined in Comment entity
+     * this allows the comment Get route to access at related user informations we will give 
+     * 
+     * @Groups({"get", "post", "get-comment-with-author", "get-blog-post-with-author"})
      * @Assert\NotBlank()
      * @Assert\Length(min=4, max=255)
      */
@@ -114,7 +127,7 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"get", "put", "post"})
+     * @Groups({"get", "put", "post", "get-comment-with-author", "get-blog-post-with-author"})
      * @Assert\NotBlank()
      */
     private $name;
@@ -139,10 +152,18 @@ class User implements UserInterface
      */
     private $posts;
 
+    /**
+     * @ORM\Column(type="simple_array", length=200)
+     *
+     * @var [type]
+     */
+    private $roles;
+
     public function __construct()
     {
         $this->comments = new ArrayCollection();
         $this->posts = new ArrayCollection();
+        $this->roles = self::DEFAULT_ROLES;
     }
 
     public function getId(): ?int
@@ -249,11 +270,6 @@ class User implements UserInterface
         return $this;
     }
 
-    public function getRoles()
-    {
-        return ['ROLE_USER'];
-    }
-
     public function getSalt()
     {
         return null;
@@ -272,6 +288,18 @@ class User implements UserInterface
     public function setRetypedPassword(string $retypedPassword): self
     {
         $this->retypedPassword = $retypedPassword;
+
+        return $this;
+    }
+
+    public function getRoles()
+    {
+        return $this->roles;
+    }
+
+    public function setRoles(array $roles)
+    {
+        $this->roles = $roles;
 
         return $this;
     }

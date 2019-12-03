@@ -11,6 +11,11 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
+ * The operation "api_*_get_subresource" make that the subresource appears like a list of objects 
+ * instead of the related route of those objects 
+ * 
+ * With newer symfony version, the subresourceOperations is needed to call the normalizations of subresources instead of collectionOperations
+ * 
  * @ApiResource(
  *      itemOperations={
  *          "get",
@@ -22,6 +27,13 @@ use Symfony\Component\Validator\Constraints as Assert;
  *          "get",
  *          "post"={
  *              "access_control"="is_granted('IS_AUTHENTICATED_FULLY')"
+ *          }
+ *      },
+ *      subresourceOperations={
+ *          "api_blog_posts_comments_get_subresource"={
+ *              "normalization_context"={
+ *                  "groups"={"get-comment-with-author"}
+ *              }
  *          }
  *      },
  *      denormalizationContext={
@@ -36,30 +48,34 @@ class Comment implements AuthorEntityInterface, PublishedDateEntityInterface
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups({"get-comment-with-author"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="text")
-     * @Groups({"post"})
+     * @Groups({"get-comment-with-author", "post"})
      * @Assert\NotBlank()
      */
     private $content;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups({"get-comment-with-author"})
      */
     private $published;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="comments")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"get-comment-with-author"})
      */
     private $author;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\BlogPost", inversedBy="comments")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"post"})
      */
     private $blogPost;
 

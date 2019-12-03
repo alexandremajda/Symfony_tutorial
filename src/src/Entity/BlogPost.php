@@ -11,6 +11,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\UserInterface;
+use ApiPlatform\Core\Annotation\ApiSubresource;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\BlogPostRepository")
@@ -21,7 +22,11 @@ use Symfony\Component\Security\Core\User\UserInterface;
  * user variable refers to the current authenticated user
  * @ApiResource(
  *      itemOperations={
- *          "get",
+ *          "get"={
+ *              "normalization_context"={
+ *                  "groups"={"get-blog-post-with-author"}
+ *              }
+ *          },
  *          "put"={
  *              "access_control"="is_granted('IS_AUTHENTICATED_FULLY') and object.getAuthor() == user"
  *          }
@@ -43,6 +48,7 @@ class BlogPost implements AuthorEntityInterface, PublishedDateEntityInterface
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups({"get-blog-post-with-author"})
      */
     private $id;
 
@@ -50,12 +56,13 @@ class BlogPost implements AuthorEntityInterface, PublishedDateEntityInterface
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank()
      * @Assert\Length(min=10)
-     * @Groups({"post"})
+     * @Groups({"post", "get-blog-post-with-author"})
      */
     private $title;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups({"get-blog-post-with-author"})
      */
     private $published;
 
@@ -63,25 +70,30 @@ class BlogPost implements AuthorEntityInterface, PublishedDateEntityInterface
      * @ORM\Column(type="text")
      * @Assert\NotBlank()
      * @Assert\Length(min=20)
-     * @Groups({"post"})
+     * @Groups({"post", "get-blog-post-with-author"})
      */
     private $content;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="posts")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"get-blog-post-with-author"})
      */
     private $author;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      * @Assert\NotBlank()
-     * @Groups({"post"})
+     * @Groups({"post", "get-blog-post-with-author"})
      */
     private $slug;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Comment", mappedBy="blogPost")
+     * 
+     * Generate a route related to the current blogPost to navigate into all its comments (/comments)
+     * @ApiSubresource()
+     * @Groups({"get-blog-post-with-author"})
      */
     private $comments;
 
