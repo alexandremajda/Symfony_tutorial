@@ -31,6 +31,12 @@ class AppFixtures extends Fixture
             'password' => '15abcdEF',
             'roles' => [User::ROLE_WRITER]
         ],[
+            'username' => 'écrivain',
+            'email' => 'ecrivain@blog.com',
+            'name' => 'ecrivain ecil',
+            'password' => '15abcdEF',
+            'roles' => [User::ROLE_WRITER]
+        ],[
             'username' => 'random',
             'email' => 'random@blog.com',
             'name' => 'random ecil',
