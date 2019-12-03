@@ -5,6 +5,8 @@ namespace App\Controller;
 use ApiPlatform\Core\Validator\ValidatorInterface;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
+use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 /**
@@ -16,15 +18,18 @@ class ResetPasswordAction
     private $validator;
     private $userPasswordEncoder;
     private $entityManager;
+    private $tokenManager;
 
     public function __construct(
         ValidatorInterface $validator, 
         UserPasswordEncoderInterface $encoder,
-        EntityManagerInterface $entityManager)
+        EntityManagerInterface $entityManager,
+        JWTTokenManagerInterface $tokenManager)
     {
         $this->validator = $validator;
         $this->userPasswordEncoder = $encoder;
         $this->entityManager = $entityManager;
+        $this->tokenManager = $tokenManager;
     }
     public function __invoke(User $data)
     {
@@ -41,8 +46,11 @@ class ResetPasswordAction
             )
         );
 
-        $this->entityManager->flush();
+        $this->entityManager->flush(); 
+        
+        $token = $this->tokenManager->create($data);
 
+        return new JsonResponse(['token'=>$token]);
         // Validation is only called after we return the data from this action
         // Entity is persist only if validation pass !
         
