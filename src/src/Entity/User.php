@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use App\Controller\ResetPasswordAction;
 use Doctrine\Common\Collections\Collection;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -105,32 +106,34 @@ class User implements UserInterface
      * this allows the comment Get route to access at related user informations we will give 
      * 
      * @Groups({"get", "post", "get-comment-with-author", "get-blog-post-with-author"})
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(groups={"post"})
      * @Assert\Length(min=4, max=255)
      */
     private $username;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(groups={"post"})
      * @Groups({"post"})
      * 
      * The Regex check is to specify the input size at least, and set up the check about 1 digit, 1 uppercase/lowercase char, symbols etc
      * @Assert\Regex(
      *      pattern="/(?=.+[A-Z])(?=.+[a-z])(?=.*\d).{7,}/",
-     *      message="Password must be 8 chars long and contains 1 digit, 1 uppercase, 1 lowercase "
+     *      message="Password must be 8 chars long and contains 1 digit, 1 uppercase, 1 lowercase ",
+     *      groups={"post"}
      * )
      */
     private $password;
 
     /**
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(groups={"post"})
      * @Groups({"post"})
      * 
      * Expressions allows you to use some code check as below, which compare the current password with its checker
      * @Assert\Expression(
      *      "this.getPassword() === this.getRetypedPassword()",
-     *      message="Passwords does not match"
+     *      message="Passwords does not match",
+     *      groups={"post"}
      * )
      */
     private $retypedPassword;
@@ -169,13 +172,13 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"get", "put", "post", "get-comment-with-author", "get-blog-post-with-author"})
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(groups={"post", "put"})
      */
     private $name;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(groups={"post", "put"})
      * @Groups({"put", "post", "get-admin", "get-owner"})
      * @Assert\Email()
      */
