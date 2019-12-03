@@ -17,6 +17,30 @@ class AppFixtures extends Fixture
     private $passwordEncoder;
     private $faker;
 
+    private const USERS = [
+        [
+            'username' => 'admin',
+            'email' => 'admin@blog.com',
+            'name' => 'adminer ecil',
+            'password' => '15abcdEF'
+        ],[
+            'username' => 'client',
+            'email' => 'client@blog.com',
+            'name' => 'client ecil',
+            'password' => '15abcdEF'
+        ],[
+            'username' => 'random',
+            'email' => 'random@blog.com',
+            'name' => 'random ecil',
+            'password' => '15abcdEF'
+        ],[
+            'username' => 'blop',
+            'email' => 'blop@blog.com',
+            'name' => 'blop ecil',
+            'password' => '15abcdEF'
+        ]
+    ];
+
     public function __construct(UserPasswordEncoderInterface $passwordEncoder)
     {
         $this->passwordEncoder = $passwordEncoder;
@@ -43,13 +67,11 @@ class AppFixtures extends Fixture
 
     public function loadBlogPost(ObjectManager $manager) {
 
-        $user = $this->getReference('blop_admin');
-
         // Generate 100 fakes blogPosts
         for ($i = 0; $i < 100; $i++) {
             $blogPost = new BlogPost();
 
-            $blogPost->setAuthor($user);
+            $blogPost->setAuthor($this->getRandomUsername()) ;
             $blogPost->setTitle($this->faker->realText(30));
             $blogPost->setContent($this->faker->realText());
             $blogPost->setPublished($this->faker->dateTime);
@@ -73,7 +95,8 @@ class AppFixtures extends Fixture
                 
                 $comment->setPublished($this->faker->dateTime);
                 $comment->setContent($this->faker->realText());
-                $comment->setAuthor($this->getReference('blop_admin'));
+
+                $comment->setAuthor($this->getRandomUsername());
                 $comment->setBlogPost($this->getReference("blog_post_$i"));
 
                 $manager->persist($comment);
@@ -83,16 +106,25 @@ class AppFixtures extends Fixture
         $manager->flush();
     }
     public function loadUser(ObjectManager $manager) {
-        $user = new User();
-        
-        $user->setUsername("blop");
-        $user->setEmail("blop@blup.bloup");
-        $user->setName("Blou");
-        $user->setPassword($this->passwordEncoder->encodePassword($user, "1234"));
 
-        $this->addReference('blop_admin', $user);
-        
-        $manager->persist($user);
+        foreach(self::USERS as $userFixture) {
+            $user = new User();
+            
+            $user->setUsername($userFixture['username']);
+            $user->setEmail($userFixture['email']);
+            $user->setName($userFixture['name']);
+            $user->setPassword($this->passwordEncoder->encodePassword($user, $userFixture['password']));
+    
+            $this->addReference('user_' . $userFixture['username'], $user);
+            
+            $manager->persist($user);
+        }
+            
         $manager->flush(); 
+    }
+
+    public function getRandomUsername(): User
+    {
+        return $this->getReference('user_' . self::USERS[rand(0,3)]['username']);
     }
 }

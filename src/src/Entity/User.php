@@ -25,7 +25,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * We need to specify the default group (l.28) to avoid some fields returned by the get route
  * 
  * @ApiResource(
- *      normalizationContext={"groups"={"get"}}
+ *      normalizationContext={"groups"={"get"}},
  *      itemOperations={
  *          "get"={
  *              "access_control"="is_granted('IS_AUTHENTICATED_FULLY')",
