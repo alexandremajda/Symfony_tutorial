@@ -135,7 +135,7 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank()
-     * @Groups({"put", "post"})
+     * @Groups({"put", "post", "get-admin"})
      * @Assert\Email()
      */
     private $email;
