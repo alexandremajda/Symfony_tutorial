@@ -32,7 +32,10 @@ security:
             # will check users when they'll send their token
             guard:
                 authenticators: 
-                    - lexik_jwt_authentication.jwt_token_authenticator 
+                    # - lexik_jwt_authentication.jwt_token_authenticator 
+
+                    # Use the class implemented to handle token expiracy instead of default bundle
+                    - App\Security\TokenAuthenticator
 
         # main:
         #     anonymous: lazy

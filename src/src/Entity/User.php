@@ -170,6 +170,11 @@ class User implements UserInterface
     private $oldPassword;
 
     /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $passwordChangeDate;
+
+    /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"get", "put", "post", "get-comment-with-author", "get-blog-post-with-author"})
      * @Assert\NotBlank(groups={"post", "put"})
@@ -373,5 +378,15 @@ class User implements UserInterface
     public function setNewPassword($newPassword)
     {
         $this->newPassword = $newPassword;
+    }
+
+    public function getPasswordChangeDate()
+    {
+        return $this->passwordChangeDate;
+    }
+
+    public function setPasswordChangeDate($passwordChangeDate)
+    {
+        $this->passwordChangeDate = $passwordChangeDate;
     }
 }
