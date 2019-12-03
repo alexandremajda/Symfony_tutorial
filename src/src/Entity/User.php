@@ -79,6 +79,8 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=255)
+     * 
+     * The Groups annotation need to be imported
      * @Groups({"get", "post"})
      * @Assert\NotBlank()
      * @Assert\Length(min=4, max=255)

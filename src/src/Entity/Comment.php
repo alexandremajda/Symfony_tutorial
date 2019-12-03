@@ -2,8 +2,13 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\AuthorEntityInterface;
+use ApiPlatform\Core\Annotation\ApiResource;
+use App\Entity\PublishedDateEntityInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ApiResource(
@@ -18,11 +23,14 @@ use Doctrine\ORM\Mapping as ORM;
  *          "post"={
  *              "access_control"="is_granted('IS_AUTHENTICATED_FULLY')"
  *          }
+ *      },
+ *      denormalizationContext={
+ *          "groups"={"post"}
  *      }
  * )
  * @ORM\Entity(repositoryClass="App\Repository\CommentRepository")
  */
-class Comment
+class Comment implements AuthorEntityInterface, PublishedDateEntityInterface
 {
     /**
      * @ORM\Id()
@@ -33,6 +41,8 @@ class Comment
 
     /**
      * @ORM\Column(type="text")
+     * @Groups({"post"})
+     * @Assert\NotBlank()
      */
     private $content;
 
@@ -75,7 +85,7 @@ class Comment
         return $this->published;
     }
 
-    public function setPublished(\DateTimeInterface $published): self
+    public function setPublished(\DateTimeInterface $published): PublishedDateEntityInterface
     {
         $this->published = $published;
 
@@ -87,7 +97,7 @@ class Comment
         return $this->author;
     }
 
-    public function setAuthor(User $author): self
+    public function setAuthor(UserInterface $author): AuthorEntityInterface
     {
         $this->author = $author;
 
