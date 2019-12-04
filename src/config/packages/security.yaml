@@ -39,6 +39,9 @@ security:
                     # Use the class implemented to handle token expiracy instead of default bundle
                     - App\Security\TokenAuthenticator
 
+            # Define the UserEnableChecker class to check if the user account is enable
+            user_checker: App\Security\UserEnabledChecker
+
         # main:
         #     anonymous: lazy
 

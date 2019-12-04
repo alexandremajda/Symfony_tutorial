@@ -31,6 +31,7 @@ class ResetPasswordAction
         $this->entityManager = $entityManager;
         $this->tokenManager = $tokenManager;
     }
+    
     public function __invoke(User $data)
     {
         // This fonction allows you to invoke the object instance as a function
