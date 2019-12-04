@@ -1,0 +1,65 @@
+security:
+    # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
+    
+    # The encoder section is to precise to use bcrypt encoder for User's entity
+    encoders:
+        App\Entity\User: bcrypt
+
+    providers:
+        # in_memory: { memory: null }
+
+        # This allows symfony to knows with which entity it should check token provided credentials 
+        database:
+            entity:
+                class: App\Entity\User
+                property: username
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+        api:
+            pattern: ^/api
+            stateless: true
+            anonymous: true
+            # anonymous: lazy
+
+            json_login:
+                # Authentication (token generation )
+                check_path: /api/login_check
+
+                # Bundles which will be used in each cases
+                success_handler: lexik_jwt_authentication.handler.authentication_success
+                failure_handler: lexik_jwt_authentication.handler.authentication_failure
+
+            # will check users when they'll send their token
+            guard:
+                authenticators: 
+                    # - lexik_jwt_authentication.jwt_token_authenticator 
+
+                    # Use the class implemented to handle token expiracy instead of default bundle
+                    - App\Security\TokenAuthenticator
+
+        # main:
+        #     anonymous: lazy
+
+            # activate different ways to authenticate
+            # https://symfony.com/doc/current/security.html#firewalls-authentication
+
+            # https://symfony.com/doc/current/security/impersonating_user.html
+            # switch_user: true
+
+    # Easy way to control access for large sections of your site
+    # Note: Only the *first* access control that matches will be used
+    access_control:
+        # - { path: ^/api/login,  roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api,        roles: IS_AUTHENTICATED_FULLY }
+
+        # Default config
+        # - { path: ^/admin, roles: ROLE_ADMIN }
+        # - { path: ^/profile, roles: ROLE_USER }
+
+    # Define the role hierarchy, which role inherits which other roles
+    role_hierarchy:
+        ROLE_WRITER: ROLE_COMMENTATOR
+        ROLE_ADMIN: [ROLE_WRITER, ROLE_EDITOR]
+        ROLE_SUPERADMIN: ROLE_ADMIN
