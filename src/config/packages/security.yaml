@@ -26,6 +26,8 @@ security:
             json_login:
                 # Authentication (token generation )
                 check_path: /api/login_check
+
+                # Bundles which will be used in each cases
                 success_handler: lexik_jwt_authentication.handler.authentication_success
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
 
@@ -56,6 +58,7 @@ security:
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
 
+    # Define the role hierarchy, which role inherits which other roles
     role_hierarchy:
         ROLE_WRITER: ROLE_COMMENTATOR
         ROLE_ADMIN: [ROLE_WRITER, ROLE_EDITOR]
