@@ -5,6 +5,7 @@ namespace App\DataFixtures;
 use App\Entity\User;
 use App\Entity\Comment;
 use App\Entity\BlogPost;
+use App\Security\TokenGenerator;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
@@ -20,6 +21,7 @@ class AppFixtures extends Fixture
      */
     private $passwordEncoder;
     private $faker;
+    private $tokenGenerator;
 
     private const USERS = [
         [
@@ -27,46 +29,56 @@ class AppFixtures extends Fixture
             'email' => 'admin@blog.com',
             'name' => 'adminer ecil',
             'password' => '15abcdEF',
-            'roles' => [User::ROLE_SUPERADMIN]
+            'roles' => [User::ROLE_SUPERADMIN],
+            'enable' => true
         ],[
             'username' => 'client',
             'email' => 'client@blog.com',
             'name' => 'client ecil',
             'password' => '15abcdEF',
-            'roles' => [User::ROLE_WRITER]
+            'roles' => [User::ROLE_WRITER],
+            'enable' => true
         ],[
             'username' => 'ecrivain',
             'email' => 'ecrivain@blog.com',
             'name' => 'ecrivain ecil',
             'password' => '15abcdEF',
-            'roles' => [User::ROLE_WRITER]
+            'roles' => [User::ROLE_WRITER],
+            'enable' => true
         ],[
             'username' => 'random',
             'email' => 'random@blog.com',
             'name' => 'random ecil',
             'password' => '15abcdEF',
-            'roles' => [User::ROLE_EDITOR]
+            'roles' => [User::ROLE_EDITOR],
+            'enable' => false
         ],[
             'username' => 'blop',
             'email' => 'blop@blog.com',
             'name' => 'blop ecil',
             'password' => '15abcdEF',
-            'roles' => [User::ROLE_ADMIN]
+            'roles' => [User::ROLE_ADMIN],
+            'enable' => true
         ],[
             'username' => 'toto',
             'email' => 'toto@tutu.com',
             'name' => 'toto ecil',
             'password' => '15abcdEF',
-            'roles' => [User::ROLE_COMMENTATOR]
+            'roles' => [User::ROLE_COMMENTATOR],
+            'enable' => true
         ]
     ];
 
-    public function __construct(UserPasswordEncoderInterface $passwordEncoder)
+    public function __construct(
+        UserPasswordEncoderInterface $passwordEncoder,
+        TokenGenerator $tokenGenerator)
     {
         $this->passwordEncoder = $passwordEncoder;
 
         // This place the instance of the FakerFactory, there's no import for this
         $this->faker = \Faker\Factory::create();
+
+        $this->tokenGenerator = $tokenGenerator;
     }
 
     /**
@@ -135,8 +147,11 @@ class AppFixtures extends Fixture
             $user->setName($userFixture['name']);
             $user->setPassword($this->passwordEncoder->encodePassword($user, $userFixture['password']));
             $user->setRoles($userFixture['roles']);
-            $user->setEnable(true);
+            $user->setEnable($userFixture['enable']);
     
+            if (!$userFixture['enable'])
+                $user->setConfirmationToken($this->tokenGenerator->getRandomSecureToken());
+
             $this->addReference('user_' . $userFixture['username'], $user);
             
             $manager->persist($user);
