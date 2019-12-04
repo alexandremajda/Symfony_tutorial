@@ -207,11 +207,25 @@ class User implements UserInterface
      */
     private $roles;
 
+    /**
+     * Confirm if the user has its account activated
+     * @ORM\Column(type="boolean")
+     */
+    private $enable;
+
+    /**
+     * The first token the user will provide with his first login
+     * @ORM\Column(type="string", length=40, nullable=true)
+     */
+    private $confirmationToken;
+
     public function __construct()
     {
         $this->comments = new ArrayCollection();
         $this->posts = new ArrayCollection();
         $this->roles = self::DEFAULT_ROLES;
+        $this->enable = false;
+        $this->confirmationToken = null;
     }
 
     public function getId(): ?int
@@ -388,5 +402,25 @@ class User implements UserInterface
     public function setPasswordChangeDate($passwordChangeDate)
     {
         $this->passwordChangeDate = $passwordChangeDate;
+    }
+
+    public function getEnable()
+    {
+        return $this->enable;
+    }
+
+    public function setEnable($enable)
+    {
+        $this->enable = $enable;
+    }
+
+    public function getConfirmationToken()
+    {
+        return $this->confirmationToken;
+    }
+
+    public function setConfirmationToken($confirmationToken)
+    {
+        $this->confirmationToken = $confirmationToken;
     }
 }
