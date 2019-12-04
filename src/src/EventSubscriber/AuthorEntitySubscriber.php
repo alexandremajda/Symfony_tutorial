@@ -10,6 +10,9 @@ use App\Entity\AuthorEntityInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
+/**
+ * This class allows you to set the current user as author automatically
+ */
 class AuthorEntitySubscriber implements EventSubscriberInterface
 {
     private $tokenStorage;
@@ -26,6 +29,13 @@ class AuthorEntitySubscriber implements EventSubscriberInterface
         ];
     }
 
+    /**
+     * Set the current user as author if the request send the post's method
+     * By the way, the entity needs to implement the AuthorEntityInterface
+     *
+     * @param ViewEvent $event
+     * @return void
+     */
     public function getAuthenticatedUser(ViewEvent $event)
     {
         $entity = $event->getControllerResult();

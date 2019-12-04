@@ -7,7 +7,9 @@ use Symfony\Component\HttpFoundation\Request;
 use ApiPlatform\Core\Serializer\SerializerContextBuilderInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
-
+/**
+ * Allow the current user to access at a custom group by adding it if he's admin
+ */
 class UserContextBuilder implements SerializerContextBuilderInterface
 {
     private $decorator;
@@ -20,6 +22,17 @@ class UserContextBuilder implements SerializerContextBuilderInterface
         $this->decorator = $decorator;
         $this->authorizationChecker = $authorizationChecker;
     }
+
+    /**
+     * Provide a new group to the user to access at different resources if he's admin
+     * Allows
+     *
+     * @param Request $request
+     * @param boolean $normalization
+     * @param array|null $extractedAttributes
+     * 
+     * @return array context
+     */
     public function createFromRequest(
         Request $request, 
         bool $normalization, 

@@ -10,6 +10,9 @@ use ApiPlatform\Core\EventListener\EventPriorities;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
+/**
+ * Allows you to hash your password
+ */
 class PasswordHashSubscriber implements EventSubscriberInterface {
 
     private $passwordEncoder;
@@ -28,7 +31,12 @@ class PasswordHashSubscriber implements EventSubscriberInterface {
     }
 
 
-    // The "GetResponseForControllerResultEvent" has been renamed as "ViewEvent"
+    /**
+     * Check if the event launcher is a user entity and if it's a post method
+     * Set his password as encrypted 
+     * 
+     * The "GetResponseForControllerResultEvent" has been renamed as "ViewEvent"
+     */
     public function hashPassword(ViewEvent $event) {
 
         $user = $event->getControllerResult();

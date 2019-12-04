@@ -7,6 +7,10 @@ use Lexik\Bundle\JWTAuthenticationBundle\Security\Authentication\Token\PreAuthen
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\Security\Guard\JWTTokenAuthenticator;
 
+/**
+ * When you change your password, your token is refresh
+ * So this class allows you to invalid the previous token
+ */
 class TokenAuthenticator extends JWTTokenAuthenticator
 {
     /**

@@ -9,6 +9,10 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
+/**
+ * Fixtures is to generated fake datas (that allows you to tests)
+ * To load fixtures -> php bin/console d:f:l -q
+ */
 class AppFixtures extends Fixture
 {
     /**
