@@ -7,19 +7,25 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\HttpKernel\Event\ViewEvent;
 use ApiPlatform\Core\EventListener\EventPriorities;
+use App\Security\TokenGenerator;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 /**
  * Allows you to hash your password
  */
-class PasswordHashSubscriber implements EventSubscriberInterface {
+class UserRegistrationSubscriber implements EventSubscriberInterface {
 
     private $passwordEncoder;
+    private $tokenGenerator;
     private $allowedMethods = array(Request::METHOD_POST);
 
-    public function __construct(UserPasswordEncoderInterface $passwordEncoder) {
+    public function __construct(
+        UserPasswordEncoderInterface $passwordEncoder,
+        TokenGenerator $tokenGenerator) 
+    {
         $this->passwordEncoder = $passwordEncoder;
+        $this->tokenGenerator = $tokenGenerator;
     }
     
     public static function getSubscribedEvents(){
@@ -45,9 +51,10 @@ class PasswordHashSubscriber implements EventSubscriberInterface {
         if (!$user instanceof User || !in_array($method, $this->allowedMethods))
             return;
 
-        $user->setPassword(
-            $this->passwordEncoder->encodePassword($user, $user->getPassword())
-        );
+        $user->setPassword($this->passwordEncoder->encodePassword($user, $user->getPassword()));
+
+        // Create the confirmation Token
+        $user->setConfirmationToken($this->tokenGenerator->getRandomSecureToken());
     }
 }
 

@@ -139,33 +139,35 @@ class User implements UserInterface
     private $retypedPassword;
 
     /**
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(groups={"put-reset-password"})
      * @Groups({"put-reset-password"})
      * 
      * The Regex check is to specify the input size at least, and set up the check about 1 digit, 1 uppercase/lowercase char, symbols etc
      * @Assert\Regex(
      *      pattern="/(?=.+[A-Z])(?=.+[a-z])(?=.*\d).{7,}/",
-     *      message="Password must be 8 chars long and contains 1 digit, 1 uppercase, 1 lowercase "
+     *      message="Password must be 8 chars long and contains 1 digit, 1 uppercase, 1 lowercase",
+     *      groups={"put-reset-password"}
      * )
      */
     private $newPassword;
 
     /**
-     * @Assert\NotBlank()
      * @Groups({"put-reset-password"})
+     * @Assert\NotBlank(groups={"put-reset-password"})
      * 
      * Expressions allows you to use some code check as below, which compare the current password with its checker
      * @Assert\Expression(
      *      "this.getNewPassword() === this.getNewRetypedPassword()",
-     *      message="Passwords does not match"
+     *      message="Passwords does not match",
+     *      groups={"put-reset-password"}
      * )
      */
     private $newRetypedPassword;
 
     /**
      * @Groups({"put-reset-password"})
-     * @Assert\NotBlank()
-     * @UserPassword()
+     * @Assert\NotBlank(groups={"put-reset-password"})
+     * @UserPassword(groups={"put-reset-password"})
      */
     private $oldPassword;
 
