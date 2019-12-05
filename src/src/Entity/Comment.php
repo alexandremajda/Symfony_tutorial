@@ -16,7 +16,11 @@ use Symfony\Component\Validator\Constraints as Assert;
  * 
  * With newer symfony version, the subresourceOperations is needed to call the normalizations of subresources instead of collectionOperations
  * 
+ * API resource "attributes" allows you to 
+ * add an attributes (here, sorting, with keyword "order") on a field, with options ("DESC")
+ * 
  * @ApiResource(
+ *      attributes={"order"={"published": "DESC"}},
  *      itemOperations={
  *          "get",
  *          "put"={

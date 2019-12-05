@@ -21,7 +21,12 @@ use Symfony\Component\Security\Core\User\UserInterface;
  * to make your entity fully exploitable by api routes (then reach the /api route in postman to see the new route)
  * 
  * user variable refers to the current authenticated user
+ * 
+ * API resource "attributes" allows you to 
+ * add an attributes (here, sorting, with keyword "order") on a field, with options ("DESC")
+ * 
  * @ApiResource(
+ *      attributes={"order"={"published": "DESC"}},
  *      itemOperations={
  *          "get"={
  *              "normalization_context"={
