@@ -3,8 +3,10 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use App\Controller\UploadImageAction;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use symfony\component\Validator\Constraints as Assert;
 
 /**
  * _api_receive = false -> disable the automatic instance creation from request body 
@@ -18,7 +20,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
  *              "method"="POST",
  *              "path"="/images",
  *              "controller"=UploadImageAction::class,
- *              "default"={"_api_receive"=false}
+ *              "defaults"={"_api_receive"=false}
  *          }
  *      }
  * )
@@ -37,14 +39,12 @@ class Image
      * File Name Property symbolise the url where users can see uploaded files
      * 
      * @Vich\UploadableField(mapping="images", fileNameProperty="url")
-     * @Constraints\NotBlank()
+     * @Assert\NotBlank()
      */
     private $file;
 
     /**
-     * @ORM\Column(type="string", nullable=true)
-     *
-     * @var [type]
+     * @ORM\Column(nullable=true)
      */
     private $url;
 
@@ -66,7 +66,7 @@ class Image
 
     public function getUrl()
     {
-        return $this->url;
+        return '/images/'.$this->url;
     }
 
     public function setUrl($url)
