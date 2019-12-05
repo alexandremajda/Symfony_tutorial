@@ -5,3 +5,7 @@ api_platform:
         json: ['application/merge-patch+json']
     swagger:
         versions: [3]
+
+    # Allows you to specify a parameter name for each entity (not only one) which will use the OrderFilter::class
+    # collection:
+    #     order_parameter_name: '_order'
