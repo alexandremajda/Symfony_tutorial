@@ -12,6 +12,7 @@ use App\Entity\PublishedDateEntityInterface;
 use ApiPlatform\Core\Annotation\ApiSubresource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
+use ApiPlatform\Core\Serializer\Filter\PropertyFilter;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\UserInterface;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
@@ -30,12 +31,16 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
  * key is the field defined to search
  * value is exact or partial (ipartial make the research case sensitive), whiches are explicit
  * 
+ * The row "author.name" allows you to search any record with nested property
+ * 
  * @ApiFilter(
  *      SearchFilter::class,
  *      properties={
  *          "id": "exact",
  *          "title": "partial",
- *          "content": "ipartial"
+ *          "content": "ipartial",
+ *          "author": "exact",
+ *          "author.name": "partial"
  *      }
  * )
  * 
@@ -74,6 +79,17 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
  *      arguments={"orderParameterName"="_order"}
  * )
  * 
+ * This one allows you to filter the result you want in the request response when specified
+ * Use it in url as shown below:
+ * URI?properties[]=id&properties[]=title
+ * @ApiFilter(
+ *      PropertyFilter::class,
+ *      arguments={
+ *          "parameterName": "properties",
+ *          "overrideDefaultProperties": false,
+ *          "whitelist": {"id", "author", "slug", "title", "content"}
+ *      }
+ * )
  * 
  * user variable refers to the current authenticated user
  * 
