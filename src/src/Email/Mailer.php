@@ -29,8 +29,8 @@ class Mailer
 
         $message = (new \Swift_Message("Hello from api platform"))
             ->setFrom('api-platform@api.com')
-            // ->setTo($user->getEmail())
-            ->setTo('alex.mjd123@gmail.com')
+            ->setTo($user->getEmail())
+            // ->setTo('alex.mjd123@gmail.com')
             ->setBody($body);
     }
 }

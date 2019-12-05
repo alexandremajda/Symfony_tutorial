@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\HttpKernel\Event\ViewEvent;
 use ApiPlatform\Core\EventListener\EventPriorities;
+use App\Email\Mailer;
 use App\Security\TokenGenerator;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
@@ -24,7 +25,7 @@ class UserRegistrationSubscriber implements EventSubscriberInterface {
     public function __construct(
         UserPasswordEncoderInterface $passwordEncoder,
         TokenGenerator $tokenGenerator,
-        \Swift_Mailer $mailer) 
+        Mailer $mailer) 
     {
         $this->passwordEncoder = $passwordEncoder;
         $this->tokenGenerator = $tokenGenerator;
@@ -60,12 +61,7 @@ class UserRegistrationSubscriber implements EventSubscriberInterface {
         $user->setConfirmationToken($this->tokenGenerator->getRandomSecureToken());
 
         // Send the mail
-        $message = (new \Swift_Message("Hello from api platform"))
-            ->setFrom('alex.mjd123@gmail.com')
-            ->setTo('alex.mjd123@gmail.com')
-            ->setBody("toutou you tou");
-
-        $this->mailer->send($message);
+        $this->mailer->sendConfirmationEmail($user);
     }
 }
 
