@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use App\Controller\UploadImageAction;
 use ApiPlatform\Core\Annotation\ApiResource;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 use symfony\component\Validator\Constraints as Assert;
 
@@ -45,6 +46,7 @@ class Image
 
     /**
      * @ORM\Column(nullable=true)
+     * @Groups({"get-blog-post-with-author"})
      */
     private $url;
 
