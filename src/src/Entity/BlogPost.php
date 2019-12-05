@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Entity\Image;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\AuthorEntityInterface;
+use ApiPlatform\Core\Annotation\ApiFilter;
 use Doctrine\Common\Collections\Collection;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Entity\PublishedDateEntityInterface;
@@ -13,12 +14,28 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\UserInterface;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\BlogPostRepository")
  * 
  * One the api bundle is installed (composer require api) add the annotation below 
  * to make your entity fully exploitable by api routes (then reach the /api route in postman to see the new route)
+ * 
+ * Using the SearchFilter class, this annotation allows you to search an element by defined properties
+ * works with a key/value association
+ * key is the field defined to search
+ * value is exact or partial (ipartial make the research case sensitive), whiches are explicit
+ * 
+ * @ApiFilter(
+ *      SearchFilter::class,
+ *      properties={
+ *          "id": "exact",
+ *          "title": "partial",
+ *          "content": "ipartial"
+ *      }
+ * )
+ * 
  * 
  * user variable refers to the current authenticated user
  * 
