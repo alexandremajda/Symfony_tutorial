@@ -48,9 +48,11 @@ class UserContextBuilder implements SerializerContextBuilderInterface
             isset($context['groups']) &&
             $normalization &&
             $this->authorizationChecker->isGranted(User::ROLE_ADMIN)
-        )
+        ) {
             // Add special group to serialization context if the current user is admin
             $context['groups'][] = 'get-admin';
+            $context['groups'][] = 'delete-user';    
+        }
 
         return $context;
     }

@@ -52,6 +52,13 @@ use Symfony\Component\Security\Core\Validator\Constraints\UserPassword;
  *              "denormalization_context"={
  *                  "groups"={"put-reset-password"}
  *              }
+ *          },
+ *          "delete"={
+ *              "access_control"="is_granted('IS_AUTHENTICATED_FULLY')",
+ *              "method"="DELETE",
+ *              "denormalization_context"={
+ *                  "groups"={"delete-user"}
+ *              }
  *          }
  *      },
  *      collectionOperations={
@@ -93,7 +100,7 @@ class User implements UserInterface
      * @ORM\Column(type="integer")
      * 
      * This annotation allows field to be fetched by api, this will return each field annotated
-     * @Groups({"get"})
+     * @Groups({"get", "delete-user"})
      */
     private $id;
 

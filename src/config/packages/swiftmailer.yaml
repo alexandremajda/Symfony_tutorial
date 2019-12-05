@@ -1,0 +1,9 @@
+swiftmailer:
+    url: '%env(MAILER_URL)%'
+    # transport:        gmail
+    # username:         alex.mjd123gmail.com
+    # password:         qwerty23#
+    # host:             localhost
+    # port:             465
+    # encryption:       ssl
+    spool: { type: 'memory' }
