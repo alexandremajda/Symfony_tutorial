@@ -14,6 +14,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\UserInterface;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 
 /**
@@ -33,6 +34,15 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
  *          "id": "exact",
  *          "title": "partial",
  *          "content": "ipartial"
+ *      }
+ * )
+ * 
+ * We can add more than one ApiFilter, btw, the class used needs to be imported
+ * This one is used to do some more complicated queries, and are written in url like URI?published[after]=2018-06-06
+ * @ApiFilter(
+ *      DateFilter::class,
+ *      properties={
+ *          "published"
  *      }
  * )
  * 
