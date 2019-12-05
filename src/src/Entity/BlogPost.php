@@ -15,6 +15,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\UserInterface;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\RangeFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 
 /**
@@ -39,10 +40,20 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
  * 
  * We can add more than one ApiFilter, btw, the class used needs to be imported
  * This one is used to do some more complicated queries, and are written in url like URI?published[after]=2018-06-06
+ * Accurators could be used: after, strictly_after, before, strictly_before
+ * 
  * @ApiFilter(
  *      DateFilter::class,
  *      properties={
  *          "published"
+ *      }
+ * )
+ * 
+ * This one use accurators [gt], [gte], [lt], [lte]
+ * @ApiFilter(
+ *      RangeFilter::class,
+ *      properties={
+ *          "id"
  *      }
  * )
  * 
