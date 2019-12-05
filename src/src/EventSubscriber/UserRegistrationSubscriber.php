@@ -66,25 +66,6 @@ class UserRegistrationSubscriber implements EventSubscriberInterface {
             ->setBody("toutou you tou");
 
         $this->mailer->send($message);
-
-        // Create the Transport
-        // $transport = (new \Swift_SmtpTransport('smtp.gmail.com', 465))
-        // ->setUsername('alex.mjd123@gmail.com')
-        // ->setPassword('qwerty23#')
-        // ;
-
-        // Create the Mailer using your created Transport
-        // $mailing = new \Swift_Mailer($transport);
-
-        // // Create a message
-        // $message = (new \Swift_Message('Wonderful Subject'))
-        // ->setFrom(['john@doe.com' => 'John Doe'])
-        // ->setTo(['alex.mjd123@gmail.com' => 'A name'])
-        // ->setBody('Here is the message itself')
-        // ;
-
-        // Send the message
-        // $mailing->send($message);
     }
 }
 
