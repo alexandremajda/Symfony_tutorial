@@ -5,7 +5,18 @@ api_platform:
         json: ['application/merge-patch+json']
     swagger:
         versions: [3]
+    collection:
+        # Allows you to specify a parameter name for each entity (not only one) which will use the OrderFilter::class
+        # order_parameter_name: '_order'
 
-    # Allows you to specify a parameter name for each entity (not only one) which will use the OrderFilter::class
-    # collection:
-    #     order_parameter_name: '_order'
+        # enable the pagination
+        pagination:
+            # enabled: false
+            page_parameter_name: _page
+
+            # Set the pagination enable to the client, with its parameter name
+            client_enabled: true
+            enabled_parameter_name: pagination
+            
+            # 10 by default
+            items_per_page: 4
