@@ -9,7 +9,8 @@ api_platform:
         # Allows you to specify a parameter name for each entity (not only one) which will use the OrderFilter::class
         # order_parameter_name: '_order'
 
-        # enable the pagination
+        # enable the pagination generically
+        # Any of those properties can be specify in any entity as an attribute of ApiResource
         pagination:
             # enabled: false
             page_parameter_name: _page
@@ -17,6 +18,20 @@ api_platform:
             # Set the pagination enable to the client, with its parameter name
             client_enabled: true
             enabled_parameter_name: pagination
-            
+
             # 10 by default
             items_per_page: 4
+
+            # enabling client to choose items per page
+            client_items_per_page: true # disabled by default
+            items_per_page_parameter_name: itemsPerPage
+
+            #user can specify maximum items per pages
+            maximum_items_per_page: 15
+
+            # will provide a link to the next pages (optimization )
+            partial: true
+
+            # enabling client to choose the partial pagination
+            client_partial: true
+            partial_parameter_name: 'partial'
