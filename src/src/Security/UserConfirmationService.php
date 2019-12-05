@@ -21,7 +21,7 @@ class UserConfirmationService
 
     public function confirmUser(string $confirmationToken)
     {
-        $user = $this->userRepository->findOneBy(['confirmationToken' => $confirmationToken->confirmationToken]);
+        $user = $this->userRepository->findOneBy(['confirmationToken' => $confirmationToken]);
         
         if (!$user)
             throw new NotFoundHttpException();

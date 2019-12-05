@@ -3,6 +3,7 @@
 namespace App\Email;
 
 use App\Entity\User;
+use Twig\Environment;
 
 class Mailer
 {
@@ -11,7 +12,7 @@ class Mailer
 
     public function __construct(
         \Swift_Mailer $mailer,
-        \Twig_Environment $twig
+        Environment $twig
     )
     {
         $this->mailer = $mailer;
@@ -31,6 +32,8 @@ class Mailer
             ->setFrom('api-platform@api.com')
             ->setTo($user->getEmail())
             // ->setTo('alex.mjd123@gmail.com')
-            ->setBody($body);
+            ->setBody($body, 'text/html');
+
+        $this->mailer->send($message);
     }
 }
