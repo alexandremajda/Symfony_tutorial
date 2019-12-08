@@ -39,3 +39,4 @@ api_platform:
     # Set status code for custom exception
     exception_to_status:
         App\Exception\EmptyBodyException: 400
+        App\Exception\InvalidConfirmationTokenException: 404

@@ -51,6 +51,9 @@ use Symfony\Component\Security\Core\Validator\Constraints\UserPassword;
  *              "controller"=ResetPasswordAction::class,
  *              "denormalization_context"={
  *                  "groups"={"put-reset-password"}
+ *              },
+ *              "validation_groups"={
+ *                  "put-reset-password"
  *              }
  *          },
  *          "delete"={
@@ -68,6 +71,9 @@ use Symfony\Component\Security\Core\Validator\Constraints\UserPassword;
  *              },
  *              "normalization_context"={
  *                  "groups"={"get"}
+ *              },
+ *              "validation_groups"={
+ *                  "post"
  *              }
  *          }
  *      },
