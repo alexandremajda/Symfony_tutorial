@@ -1,0 +1,4 @@
+monolog:
+
+    # A way to provide a new logger channel
+    channels: ['token_confirmation']

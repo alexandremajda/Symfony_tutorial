@@ -36,3 +36,8 @@ services:
         tags:
             # The bigger priority, the first it will be called on the entity
             - { name: 'serializer.normalizer', priority: 64 }
+
+    # Setting the token_confirmation channel to the UserConfirmationService's logger 
+    App\Security\UserConfirmationService:
+        arguments:
+            $logger: '@monolog.logger.token_confirmation'
