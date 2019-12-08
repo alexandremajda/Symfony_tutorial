@@ -35,3 +35,7 @@ api_platform:
             # enabling client to choose the partial pagination
             client_partial: true
             partial_parameter_name: 'partial'
+
+    # Set status code for custom exception
+    exception_to_status:
+        App\Exception\EmptyBodyException: 400
